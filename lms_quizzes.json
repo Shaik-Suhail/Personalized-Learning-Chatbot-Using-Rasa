@@ -1,0 +1,32 @@
+{
+    "1": {
+        "topic_id": "1",
+        "question": "What is a vector?",
+        "answer": "An array of elements"
+    },
+    "2": {
+        "topic_id": "1",
+        "question": "What is the size of matrix?",
+        "answer": "Rows and columns"
+    },
+    "3": {
+        "topic_id": "2",
+        "question": "What is derivative?",
+        "answer": "Rate of change of a function"
+    },
+    "4": {
+        "topic_id": "2",
+        "question": "What is integral?",
+        "answer": "Area under the curve"
+    },
+    "5": {
+        "topic_id": "3",
+        "question": "What is the output of print(2**3)?",
+        "answer": "8"
+    },
+    "6": {
+        "topic_id": "3",
+        "question": "what is def used for?",
+        "answer": "to create function"
+    }
+}

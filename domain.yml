@@ -1,0 +1,87 @@
+version: "3.1"
+
+# Intents define all possible user inputs the bot can understand
+intents:
+  - greet
+  - goodbye
+  - ask_help
+  - start_learning
+  - ask_topic_info
+  - ask_progress
+  - give_feedback
+  - thanks
+  - default_welcome
+  - list_courses
+
+# Slots store conversation context and user preferences
+slots:
+  topic:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: topic
+
+  user_id:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+
+  current_topic:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+
+  current_progress:
+    type: float
+    influence_conversation: false
+    mappings:
+      - type: from_text
+
+  question_asked:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+
+  current_question:
+     type: any
+     influence_conversation: false
+     mappings: []
+
+  quiz_started:
+    type: bool
+    influence_conversation: false
+    mappings:
+      - type: from_text
+
+# Templates for bot's responses
+responses:
+  utter_greet:
+    - text: "Hello! 👋 Welcome to your personalized learning assistant. I can provide information about the following courses: {course_list}"
+  utter_goodbye:
+    - text: "Goodbye! Come back anytime for more learning. 💻"
+  utter_help:
+    - text: "Sure, I can help you with learning. How can I assist you today?"
+  utter_default:
+    - text: "I'm not sure I understand. Could you rephrase?"
+  utter_thanks:
+    - text: "You're very welcome!"
+  utter_default_answer_general_question:
+    - text: "I'm not sure about that. Please ask something related to learning."
+
+# Custom actions that require complex logic
+actions:
+  - action_start_learning
+  - action_get_topic_info
+  - action_default_welcome
+  - action_list_courses
+  - action_provide_learning_recommendations
+  - action_show_enrollments
+  - action_greet
+
+session_config:
+  carry_over_slots_to_new_session: true
+  session_expiration_time: 3600

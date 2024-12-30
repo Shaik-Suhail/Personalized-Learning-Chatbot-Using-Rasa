@@ -1,0 +1,69 @@
+{
+  "courses": [
+    {
+      "courseTitle": "Web Development",
+      "description": "Learn the fundamentals of building websites and web applications.",
+      "syllabus": [],
+      "progressTracking": {
+        "completedModules": [],
+        "completedAssessments": []
+      }
+    },
+    {
+      "courseTitle": "App Development",
+      "description": "Learn the fundamentals of building Mobile apps",
+      "syllabus": [],
+      "progressTracking": {
+        "completedModules": [],
+        "completedAssessments": []
+      }
+    },
+    {
+      "courseTitle": "Python",
+      "description": "Learn the fundamentals of Python programming.",
+      "syllabus": [],
+      "progressTracking": {
+        "completedModules": [],
+        "completedAssessments": []
+      }
+    },
+    {
+      "courseTitle": "Java",
+      "description": "Learn the fundamentals of Java programming.",
+      "syllabus": [],
+      "progressTracking": {
+        "completedModules": [],
+        "completedAssessments": []
+      }
+    },
+    {
+      "courseTitle": "C++",
+      "description": "Learn the fundamentals of C++ programming.",
+      "syllabus": [],
+      "progressTracking": {
+        "completedModules": [],
+        "completedAssessments": []
+      }
+    },
+    {
+      "courseTitle": "Full Stack Development",
+      "description": "Learn the fundamentals of building Full Stack applications",
+      "syllabus": [],
+      "progressTracking": {
+        "completedModules": [],
+        "completedAssessments": []
+      }
+    },
+    {
+      "courseTitle": "Flutter",
+      "description": "Learn the fundamentals of building cross-platform mobile apps with Flutter.",
+      "syllabus": [],
+      "progressTracking": {
+        "completedModules": [],
+        "completedAssessments": []
+      }
+    }
+  ],
+  "users": {},
+  "enrollments": {}
+}

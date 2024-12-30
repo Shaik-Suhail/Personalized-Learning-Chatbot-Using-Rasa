@@ -1,0 +1,42 @@
+# This file contains the different endpoints your bot can use.
+
+#Server where the models are pulled from.
+# https://rasa.com/docs/rasa/model-storage#fetching-models-from-a-server
+
+#models:
+#  url: http://my-server.com/models/default_core@latest
+#  wait_time_between_pulls:  10   # [optional](default: 100)
+
+# Server which runs your custom actions.
+# https://rasa.com/docs/rasa/custom-actions
+
+# Server which runs your custom actions.
+# Uncomment and update the URL if you have a custom action server running.
+action_endpoint:
+  url: "http://localhost:5055/webhook"
+
+# Tracker store which is used to store the conversations.
+# Uncomment and configure the tracker store if you want to persist conversations outside memory.
+#tracker_store:
+  #type: SQL
+  #dialect: "sqlite"
+  #db:
+    #"user_data.db" # SQLite database file for storing conversations
+    # Not required for SQLite
+  # Set to true if you're using SSL for communication.
+# Uncomment and configure the MongoDB tracker store if you are using MongoDB.
+# tracker_store:
+#   type: mongod
+#   url: mongodb://localhost:27017  # Replace with your MongoDB instance URL.
+#   db: rasa  # Replace with the database name you're using.
+#   username: your_username  # Replace with MongoDB username if authentication is required.
+#   password: your_password  # Replace with MongoDB password.
+
+# Event broker which all conversation events should be streamed to.
+# Uncomment and configure if you're using an event broker.
+# event_broker:
+#   url: localhost  # Replace with your event broker URL.
+#   username: your_username  # Replace with event broker username if needed.
+#   password: your_password  # Replace with event broker password if needed.
+#   queue: your_queue_name  # Replace with the event broker queue name.
+

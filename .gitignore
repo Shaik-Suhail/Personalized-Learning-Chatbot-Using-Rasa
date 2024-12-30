@@ -1,0 +1,112 @@
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.rasa\cache
+.Python
+env/
+build/
+dist/
+*.egg-info
+*.egg
+MANIFEST
+
+# Ignore Streamlit cache
+.streamlit/
+
+# Environments
+
+.env
+.venv
+venv/
+env/
+
+# IDE Specific Files
+.idea/
+*.iml
+.vscode/
+
+# Temporary and log files
+*.log
+*.swp
+*.tmp
+*.bak
+*.cache
+
+# System files
+.DS_Store
+*.pyc
+*.pyo
+
+# Rasa Specific files
+models/
+__pycache__
+*.db
+
+# Specific file extensions to ignore
+*.py[cod]
+
+# Ignore the my_lms_data.json file, if you are no longer using it.
+my_lms_data.json
+
+# Ignore any temporary files that are created by the IDE or other software
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.rasa\cache
+.Python
+env/
+build/
+dist/
+*.egg-info
+*.egg
+MANIFEST
+
+# Ignore Streamlit cache
+.streamlit/
+
+# Environments
+
+.env
+.venv
+venv/
+env/
+
+# IDE Specific Files
+.idea/
+*.iml
+.vscode/
+
+# Temporary and log files
+*.log
+*.swp
+*.tmp
+*.bak
+*.cache
+
+# System files
+.DS_Store
+*.pyc
+*.pyo
+
+# Rasa Specific files
+models/
+__pycache__
+*.db
+
+# Specific file extensions to ignore
+*.py[cod]
+
+# Ignore the my_lms_data.json file, if you are no longer using it.
+my_lms_data.json
+
+# Ignore any temporary files that are created by the IDE or other software
+>>>>>>> f7acefcf303156e382d11cd654ca4ffcdbf50810
+*.tmp
