@@ -1,1 +1,99 @@
+version: "3.1"
 
+nlu:
+  # Training examples for basic interactions
+  - intent: greet
+    examples: |
+      - hey
+      - hello
+      - hi
+      - good morning
+      - good evening
+      - hello bot
+      - hi bot
+      - hey bot
+      - greetings
+      - good day
+
+  # Training examples for course-related interactions
+  - intent: ask_topic_info
+    examples: |
+      - what is [linear algebra](topic)
+      - explain [calculus](topic)
+      - tell me about [python](topic)
+      - I want to learn more about [data structures](topic)
+      - define [quantum physics](topic)
+      - tell me about [web development](topic)
+      - explain [app development](topic)
+      - I want to learn [java](topic)
+      - can you explain [c++](topic)
+      - help me with [full stack development](topic)
+      - what is [flutter](topic)
+
+  - intent: start_learning
+    examples: |
+      - I want to start learning
+      - let's begin learning
+      - I am ready to learn
+      - start a course
+      - start learning about [web development](topic)
+      - start learning [app development](topic)
+      - can you guide me to start [python](topic)
+      - I want to learn [java](topic)
+      - start learning [c++](topic)
+      - begin [full stack development](topic)
+      - learn [flutter](topic)
+
+  # Training examples for feedback handling
+  - intent: give_feedback
+    examples: |
+      - I have feedback
+      - my feedback is
+      - I want to say something
+      - I want to give feedback
+      - I have a question about this topic
+      - the course is great
+      - this is helpful
+      - the content is awesome
+      - the explanation is great
+
+  # Exit conversation examples
+  - intent: goodbye
+    examples: |
+      - bye
+      - goodbye
+      - see you later
+      - farewell
+
+  # Examples of negative feedback from users
+  - intent: ask_progress
+    examples: |
+      - what's my progress
+      - how am I doing
+      - where am I
+      - what have I completed
+      - show my progress
+      - what is my progress
+      - progress report
+
+  - intent: thanks
+    examples: |
+      - thanks
+      - thank you
+      - that is helpful
+      - I really appreciate
+  - intent: default_welcome
+    examples: |
+      - welcome message
+      - bot should greet
+      - start the conversation
+      - bot start
+      - initial message
+
+  - intent: list_courses
+    examples: |
+      - list the courses
+      - what courses do you have
+      - what are the courses
+      - show me the courses
+      - can you list the courses
