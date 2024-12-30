@@ -1,0 +1,39 @@
+version: "3.1"
+
+rules:
+  - rule: Greet user on startup
+    steps:
+      - intent: greet
+      - action: action_greet
+
+  - rule: Say goodbye anytime user says goodbye
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - rule: Start learning when user provides topic
+    steps:
+      - intent: start_learning
+      - action: action_start_learning
+
+  - rule: Get topic information when the user asks for it
+    steps:
+      - intent: ask_topic_info
+      - action: action_get_topic_info
+
+  - rule: Respond to "thanks"
+    steps:
+      - intent: thanks
+      - action: utter_thanks
+  - rule: provide learning recommendations to users
+    steps:
+       - intent: give_feedback
+       - action: action_provide_learning_recommendations
+  - rule: list courses to the user
+    steps:
+      - intent: list_courses
+      - action: action_list_courses
+  - rule: Handle fallback
+    steps:
+      - intent: nlu_fallback
+      - action: utter_default

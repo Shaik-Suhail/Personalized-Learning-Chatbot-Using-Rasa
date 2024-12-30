@@ -1,0 +1,42 @@
+version: "3.1"
+
+stories:
+  - story: greet_user
+    steps:
+      - intent: greet
+      - action: action_greet
+
+  - story: say_goodbye
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - story: ask_for_help
+    steps:
+      - intent: ask_help
+      - action: utter_help
+
+  - story: start_learning
+    steps:
+      - intent: start_learning
+      - action: action_start_learning
+
+  - story: ask_for_topic_info
+    steps:
+      - intent: ask_topic_info
+      - action: action_get_topic_info
+
+  - story: give_user_feedback
+    steps:
+      - intent: give_feedback
+      - action: action_provide_learning_recommendations
+
+  - story: thanks_response
+    steps:
+      - intent: thanks
+      - action: utter_thanks
+
+  - story: list_courses
+    steps:
+       - intent: list_courses
+       - action: action_list_courses
