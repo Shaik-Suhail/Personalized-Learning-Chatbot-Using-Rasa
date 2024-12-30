@@ -1,0 +1,152 @@
+stories:
+  - story: greet_and_start_learning
+    steps:
+      - user: |
+          hello there!
+        intent: greet
+      - action: utter_greet
+      - user: |
+          I want to start learning about linear algebra
+        intent: start_learning
+      - action: action_extract_topic
+      - action: action_start_learning
+      - user: |
+          what is linear algebra
+        intent: ask_topic_info
+      - action: action_extract_topic
+      - action: action_get_topic_info
+      - user: |
+          thanks
+        intent: thanks
+      - action: utter_thanks
+      - user: |
+          start quiz
+        intent: start_quiz
+      - action: action_extract_topic
+      - action: action_start_quiz
+
+  - story: greet_and_check_progress
+    steps:
+      - user: |
+          hi
+        intent: greet
+      - action: utter_greet
+      - user: |
+          I want to learn about Python
+        intent: start_learning
+      - action: action_extract_topic
+      - action: action_start_learning
+      - user: |
+          what is my progress
+        intent: ask_progress
+      - action: action_get_progress
+
+  - story: continue_learning_path
+    steps:
+      - user: |
+          hey
+        intent: greet
+      - action: utter_greet
+      - user: |
+          I want to learn about Calculus
+        intent: start_learning
+      - action: action_extract_topic
+      - action: action_start_learning
+      - user: |
+          continue learning
+        intent: continue_learning
+      - action: action_continue_learning
+      - user: |
+          what is calculus
+        intent: ask_topic_info
+      - action: action_extract_topic
+      - action: action_get_topic_info
+      - user: |
+          thanks
+        intent: thanks
+      - action: utter_thanks
+      - user: |
+          start quiz
+        intent: start_quiz
+      - action: action_extract_topic
+      - action: action_start_quiz
+
+  - story: get_topic_info_then_goodbye
+    steps:
+      - user: |
+          hi
+        intent: greet
+      - action: utter_greet
+      - user: |
+          tell me about python
+        intent: ask_topic_info
+      - action: action_extract_topic
+      - action: action_get_topic_info
+      - user: |
+         bye
+        intent: goodbye
+      - action: utter_goodbye
+
+  - story: feedback_and_goodbye
+    steps:
+      - user: |
+          hello
+        intent: greet
+      - action: utter_greet
+      - user: |
+          I have feedback
+        intent: give_feedback
+      - action: action_get_feedback
+      - user: |
+          it's good
+        intent: affirm
+      - action: action_affirm
+      - user: |
+         goodbye
+        intent: goodbye
+      - action: utter_goodbye
+
+  - story: general_question_and_fallback
+    steps:
+       - user: |
+           what is the time
+         intent: user_asked_general_question
+       - action: utter_default_answer_general_question
+       - user: |
+           what do you do
+         intent: nlu_fallback
+       - action: utter_default
+  - story: start_quiz_and_answer
+    steps:
+       - user: |
+           hello
+         intent: greet
+       - action: utter_greet
+       - user: |
+           i want to start a quiz
+         intent: start_quiz
+       - action: action_extract_topic
+       - action: action_start_quiz
+       - user: |
+          8
+         intent: answer_quiz
+       - action: action_answer_quiz
+  - story: start_quiz_and_incorrect_answer
+    steps:
+       - user: |
+           hello
+         intent: greet
+       - action: utter_greet
+       - user: |
+           i want to start a quiz on linear algebra
+         intent: start_quiz
+       - action: action_extract_topic
+       - action: action_start_quiz
+       - user: |
+           An array of elements
+         intent: answer_quiz
+       - action: action_answer_quiz
+       - user: |
+           what is my progress
+         intent: ask_progress
+       - action: action_get_progress
