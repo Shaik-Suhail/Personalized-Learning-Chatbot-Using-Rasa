@@ -1,4 +1,4 @@
-# Personalized Learning Chatbot
+# Personalized Learning Chatbot Using Rasa
 
 This repository contains the code for a personalized learning chatbot designed to guide users through various programming courses. The chatbot leverages Rasa for conversational AI and Streamlit for the interactive user interface.
 
