@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: 'Roboto', sans-serif;
-    background-image: url('C:\\Users\\HP\\personalized chatbot using rasa\\backend\\ai picture.jpg');
+    background-image: url('ai picture.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -11,9 +11,9 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    color: #333;
+    color: #f0f0f0; /* Light text color for better visibility on dark background */
     overflow-x: hidden;
-    background-color: #f0f0f0;
+    background-color: #1a1a1a; /* Light black background color */
 }
 
 /* Chat Container */
@@ -21,9 +21,9 @@ body {
     width: 90%;
     max-width: 700px;
     margin: 40px auto;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -33,7 +33,7 @@ body {
 
 /* Chat Header */
 .chat-container .chat-header {
-    background: linear-gradient(45deg, #4a148c, #6a1b9a); /* A darker purple gradient */
+    background: linear-gradient(45deg, #4a148c, #6a1b9a);
     color: rgb(98, 242, 223);
     padding: 20px;
     text-align: center;
@@ -63,7 +63,7 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Less pronounced shadow */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     z-index: -1;
     border-radius: 12px 12px 0 0;
     pointer-events:none;
@@ -75,7 +75,7 @@ body {
     max-height: 400px;
     overflow-y: auto;
     padding: 15px;
-    background-color: #f9f9f9;
+    background-color: rgba(255,255,255,0.05); /* Semi-transparent white background */
     flex: 1;
     position: relative;
  }
@@ -118,13 +118,13 @@ body {
 .user-message {
     text-align: right;
     color: white;
-    background-color: #7b1fa2; /* Less intense purple for user messages */
+    background-color: #7b1fa2;
     margin-left: auto;
 }
 .bot-message {
     text-align: left;
-    background-color: #e8eaf6;  /* Lighter grey for bot messages */
-  color:#333;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+     color: #f0f0f0; /* Light text color for better visibility on dark background */
 }
 .bot-message p{
   margin-bottom: 0px;
@@ -163,7 +163,7 @@ body {
 .chat-input {
     display: flex;
     padding: 10px;
-    background-color: #eceff1;
+    background-color: rgba(255,255,255,0.05);
     border-top: 1px solid #ddd;
 }
 .chat-input textarea {
@@ -173,11 +173,12 @@ body {
     padding: 10px;
     resize: none;
     font-size: 15px;
-    background-color: white;
+    background-color: rgba(255,255,255,0.05);
+     color:#f0f0f0;
 }
  .chat-input textarea:focus {
     outline: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Less focused outline */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 .chat-input button {
     border: none;
@@ -192,27 +193,27 @@ body {
 }
 
 .chat-input button:hover {
-    background-color: #4a148c; /* Darker purple hover color */
+    background-color: #4a148c;
 }
  /*Floating Window*/
 .floating-window {
-  position: fixed; /* Fixed position relative to the viewport */
+  position: fixed;
     top: 100px;
-    right: 20px; /* Position from the right */
-    width: 280px; /* Set the width of your floating window */
+    right: 20px;
+    width: 280px;
    padding: 20px;
-   background-color: rgba(255,255,255,0.95);
+    background-color: rgba(255,255,255,0.1);
     border-radius: 10px;
    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     z-index: 100;
-   animation: slideInFromRight 0.5s ease-in-out; /* CSS animation */
-    transition: transform 0.3s ease, opacity 0.3s ease; /* smooth transtion */
+   animation: slideInFromRight 0.5s ease-in-out;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 1;
 }
 .floating-window.hidden {
-      transform: translateX(200%); /* Move off screen to the right */
+      transform: translateX(200%);
         opacity: 0;
-    pointer-events:none; /* Disable clicks */
+    pointer-events:none;
 }
 @keyframes slideInFromRight {
     from {
@@ -259,4 +260,20 @@ body {
     0% {transform: scale(1);}
     50% { transform: scale(1.05); }
     100% { transform: scale(1); }
+}
+.animated-tab-middle{
+    position: absolute;
+    top:10px;
+    left:50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+   padding: 10px 15px;
+    border-radius: 4px;
+     display: inline-block;
+    font-weight: bold;
+     letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+   animation: slideInTop 0.6s ease-in-out, pulse 2s linear infinite;
+   z-index: 100;
 }
