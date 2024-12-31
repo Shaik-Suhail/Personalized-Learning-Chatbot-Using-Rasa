@@ -12,6 +12,11 @@ intents:
   - thanks
   - default_welcome
   - list_courses
+  - enroll_in_course
+  - show_enrolled_courses
+  - start_quiz
+  - answer_quiz
+  - mark_module_complete
 
 # Slots store conversation context and user preferences
 slots:
@@ -56,6 +61,12 @@ slots:
     influence_conversation: false
     mappings:
       - type: from_text
+  module:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: module
 
 # Templates for bot's responses
 responses:
@@ -71,6 +82,10 @@ responses:
     - text: "You're very welcome!"
   utter_default_answer_general_question:
     - text: "I'm not sure about that. Please ask something related to learning."
+  utter_enroll_success:
+    - text: "Okay, you've been enrolled in {current_topic}."
+  utter_enroll_failure:
+    - text: "Sorry, I'm unable to enroll you in this course."
 
 # Custom actions that require complex logic
 actions:
@@ -81,6 +96,11 @@ actions:
   - action_provide_learning_recommendations
   - action_show_enrollments
   - action_greet
+  - action_enroll_in_course
+  - action_show_enrolled_courses
+  - action_start_quiz
+  - action_answer_quiz
+  - action_mark_module_complete
 
 session_config:
   carry_over_slots_to_new_session: true
