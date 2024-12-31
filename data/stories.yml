@@ -1,42 +1,56 @@
 version: "3.1"
 
 stories:
-  - story: greet_user
+  - story: greet user
     steps:
       - intent: greet
       - action: action_greet
 
-  - story: say_goodbye
+  - story: say goodbye
     steps:
       - intent: goodbye
       - action: utter_goodbye
 
-  - story: ask_for_help
+  - story: welcome user
     steps:
-      - intent: ask_help
-      - action: utter_help
+      - intent: default_welcome
+      - action: action_default_welcome
 
-  - story: start_learning
-    steps:
-      - intent: start_learning
-      - action: action_start_learning
-
-  - story: ask_for_topic_info
+  - story: ask for course info
     steps:
       - intent: ask_topic_info
       - action: action_get_topic_info
 
-  - story: give_user_feedback
+  - story: start learning path
     steps:
-      - intent: give_feedback
-      - action: action_provide_learning_recommendations
+      - intent: start_learning
+      - action: action_start_learning
 
-  - story: thanks_response
+  - story: enroll in a course
     steps:
-      - intent: thanks
-      - action: utter_thanks
+      - intent: enroll_in_course
+      - action: action_enroll_in_course
 
-  - story: list_courses
+  - story: show enrolled courses
     steps:
-       - intent: list_courses
-       - action: action_list_courses
+      - intent: show_enrolled_courses
+      - action: action_show_enrolled_courses
+
+  - story: start quiz for a course
+    steps:
+      - intent: start_quiz
+      - action: action_start_quiz
+
+  - story: answer a quiz question
+    steps:
+      - intent: answer_quiz
+      - action: action_answer_quiz
+
+  - story: mark a module as complete
+    steps:
+      - intent: mark_module_complete
+      - action: action_mark_module_complete
+  - story: fallback for unknown intents
+    steps:
+      - intent: nlu_fallback
+      - action: utter_default
