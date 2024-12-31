@@ -97,3 +97,57 @@ nlu:
       - what are the courses
       - show me the courses
       - can you list the courses
+
+  - intent: enroll_in_course
+    examples: |
+      - enroll me in [web](topic) development
+      - i want to enroll in [app](topic) development
+      - enroll me in [python](topic) course
+      - enroll in [java](topic) please
+      - can you enroll me in [c++](topic)
+      - i want to enroll for [fullstack](topic)
+      - enroll me in the [flutter](topic) course
+
+  - intent: show_enrolled_courses
+    examples: |
+      - show my courses
+      - what are my enrolled courses
+      - display my enrollments
+      - show my enrollments
+
+  - intent: start_quiz
+    examples: |
+      - start quiz for [web](topic)
+      - can you start quiz for [app](topic)
+      - start [python](topic) quiz
+      - start quiz for [java](topic)
+      - begin [c++](topic) quiz
+      - start quiz for [fullstack](topic)
+      - let's begin [flutter](topic) quiz
+
+  - intent: answer_quiz
+    examples: |
+      - answer_quiz {"topic":"web","answer":"React"}
+      - answer_quiz {"topic":"app","answer":"React Native"}
+      - answer_quiz {"topic":"python", "answer":"[1,2,3]"}
+      - answer_quiz {"topic":"java", "answer":"String"}
+      - answer_quiz {"topic":"c++", "answer":"<>"}
+      - answer_quiz {"topic":"fullstack", "answer":"To enable communication between web services"}
+      - answer_quiz {"topic":"flutter","answer":"Dart"}
+
+  - intent: mark_module_complete
+    examples: |
+      - mark [HTML Basics](module) completed for [web](topic)
+      - mark module [CSS Fundamentals](module) completed for [web](topic)
+      - mark module [Platform Selection](module) completed for [app](topic)
+      - mark [Android basics](module) module complete for [app](topic)
+      - mark module [Introduction to Python](module) complete for [python](topic)
+      - mark [Data structures in Python](module) complete for [python](topic)
+      - mark module [Java Basics](module) completed for [java](topic)
+      - mark [Data Structures](module) completed for [java](topic)
+      - mark module [C++ Fundamentals](module) complete for [c++](topic)
+      - mark [C++ Datatypes](module) module completed for [c++](topic)
+      - mark [Frontend Basics](module) complete for [fullstack](topic)
+      - mark [Backend Fundamentals](module) module completed for [fullstack](topic)
+      - mark module [Introduction to Flutter](module) complete for [flutter](topic)
+      - mark [Flutter UI Fundamentals](module) completed for [flutter](topic)
