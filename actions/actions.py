@@ -4,6 +4,7 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 import sys
 import os
+import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..','utils')))
 from utils.lms_utils import LMSManager
 import logging
@@ -132,11 +133,14 @@ class ActionShowEnrollments(Action):
                 for course in courses:
                     response += f"📚 {course['name']}\n"
                     response += f"Status: {course['status']}\n"
-                    response += f"Enrolled: {course['enrolled_at'][:10]}\n\n"
+                    response += f"Enrolled: {course['enrolled_at'][:10]}\n"
+                    response += f"Completed Modules: {', '.join(course['completed_modules']) if course['completed_modules'] else 'None'}\n"
+                    response += f"Completed Assessments: {', '.join(course['completed_assessments']) if course['completed_assessments'] else 'None'}\n\n"
+                dispatcher.utter_message(text=response)
             else:
-                response = "You're not enrolled in any courses yet. Would you like some recommendations?"
+                dispatcher.utter_message(text="You're not enrolled in any courses yet. Would you like some recommendations?")
 
-            dispatcher.utter_message(text=response)
+
         except Exception as e:
             logging.error(f"Error in ActionShowEnrollments: {e}")  # Debug print
             dispatcher.utter_message(text="Sorry, I encountered an error while retrieving your courses.")
@@ -277,3 +281,202 @@ class ActionGreet(Action):
         course_list = ", ".join(courses)
         dispatcher.utter_message(text=f"Hello! 👋 Welcome to your personalized learning assistant. I can provide information about following courses: {course_list}")
         return []
+class ActionEnrollInCourse(Action):
+   def __init__(self):
+       super().__init__()
+       self.lms = LMSManager()
+   def name(self) -> Text:
+        return "action_enroll_in_course"
+
+   def run(self, dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+      user_id = tracker.get_slot("user_id")
+      topic = tracker.get_slot("topic")
+      logging.debug(f"ActionEnrollInCourse: user_id={user_id}, topic={topic}")
+      if topic:
+            # Map short name to full course name
+            if topic == "web":
+                full_topic_name = "Web Development"
+            elif topic == "app":
+                full_topic_name = "App Development"
+            elif topic == "python":
+                full_topic_name = "Python"
+            elif topic == "java":
+                full_topic_name = "Java"
+            elif topic == "c++":
+                full_topic_name = "C++"
+            elif topic == "fullstack":
+                full_topic_name = "Full Stack Development"
+            elif topic == "flutter":
+                 full_topic_name = "Flutter"
+            else:
+                full_topic_name = topic
+            enrolled = self.lms.enroll_user(user_id, full_topic_name)
+            if enrolled:
+                dispatcher.utter_message(text=f"Okay, you've been enrolled in {full_topic_name}.")
+                return [SlotSet("current_topic", full_topic_name)]
+            else:
+                 dispatcher.utter_message(text="Sorry, I'm unable to enroll you in this course.")
+                 return []
+      else:
+          dispatcher.utter_message(text="Please specify the course you'd like to enroll in.")
+          return []
+class ActionShowEnrolledCourses(Action):
+   def __init__(self):
+      super().__init__()
+      self.lms = LMSManager()
+
+   def name(self) -> Text:
+      return "action_show_enrolled_courses"
+
+   def run(self, dispatcher: CollectingDispatcher,
+         tracker: Tracker,
+         domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+         user_id = tracker.sender_id
+         logging.debug(f"Checking enrollments for user: {user_id}")
+         courses = self.lms.get_user_courses(user_id)
+         logging.debug(f"Retrieved courses: {courses}")
+
+         if courses:
+            response = "Here are your enrolled courses:\n\n"
+            for course in courses:
+                response += f"📚 {course['name']}\n"
+                response += f"Status: {course['status']}\n"
+                response += f"Enrolled: {course['enrolled_at'][:10]}\n"
+                response += f"Completed Modules: {', '.join(course['completed_modules']) if course['completed_modules'] else 'None'}\n"
+                response += f"Completed Assessments: {', '.join(course['completed_assessments']) if course['completed_assessments'] else 'None'}\n\n"
+
+            dispatcher.utter_message(text=response)
+         else:
+             dispatcher.utter_message(text="You're not enrolled in any courses yet. Would you like some recommendations?")
+         return []
+class ActionStartQuiz(Action):
+    def __init__(self):
+       super().__init__()
+       self.lms = LMSManager()
+
+    def name(self) -> Text:
+       return "action_start_quiz"
+
+    def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+       topic = tracker.get_slot("topic")
+       user_id = tracker.sender_id
+       logging.debug(f"ActionStartQuiz: user_id={user_id}, topic={topic}")
+       if topic:
+            # Map short name to full course name
+            if topic == "web":
+               full_topic_name = "Web Development"
+            elif topic == "app":
+               full_topic_name = "App Development"
+            elif topic == "python":
+               full_topic_name = "Python"
+            elif topic == "java":
+               full_topic_name = "Java"
+            elif topic == "c++":
+               full_topic_name = "C++"
+            elif topic == "fullstack":
+               full_topic_name = "Full Stack Development"
+            elif topic == "flutter":
+               full_topic_name = "Flutter"
+            else:
+               full_topic_name = topic
+            course_details = self.lms.get_course_details(full_topic_name)
+            if course_details and 'quiz' in course_details:
+                quiz = course_details['quiz']
+                dispatcher.utter_message(text=f"Ok, here's the quiz for {full_topic_name}, please answer the question", buttons=[
+                    {"title":option, "payload":f"answer_quiz{{'topic':'{topic}','answer':'{option}'}}"} for option in quiz['options']
+                ])
+                return[SlotSet("quiz_started",True)]
+            else:
+                 dispatcher.utter_message(text="Sorry, there is no quiz for the selected topic")
+                 return []
+       else:
+            dispatcher.utter_message(text="Please specify the course for which you'd like to start a quiz.")
+            return []
+
+class ActionAnswerQuiz(Action):
+   def __init__(self):
+       super().__init__()
+       self.lms = LMSManager()
+   def name(self) -> Text:
+       return "action_answer_quiz"
+
+   def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+       user_id = tracker.sender_id
+       intent_data = tracker.latest_message.get("intent", {}).get("name")
+       logging.debug(f"ActionAnswerQuiz: user_id={user_id}, intent_data={intent_data}")
+       answer = None
+       topic = None
+       if intent_data == "answer_quiz":
+            data_str = tracker.latest_message["text"].split("answer_quiz", 1)[1].strip()
+            data = json.loads(data_str)
+            answer = data.get('answer')
+            topic = data.get('topic')
+            # Map short name to full course name
+            if topic == "web":
+                full_topic_name = "Web Development"
+            elif topic == "app":
+                full_topic_name = "App Development"
+            elif topic == "python":
+                full_topic_name = "Python"
+            elif topic == "java":
+                 full_topic_name = "Java"
+            elif topic == "c++":
+                full_topic_name = "C++"
+            elif topic == "fullstack":
+                full_topic_name = "Full Stack Development"
+            elif topic == "flutter":
+                full_topic_name = "Flutter"
+            else:
+               full_topic_name = topic
+            course_details = self.lms.get_course_details(full_topic_name)
+            if course_details and 'quiz' in course_details:
+                correct_answer = course_details['quiz']['correct_answer']
+                if answer == correct_answer:
+                    self.lms.mark_assessment_completed(user_id,full_topic_name,course_details['quiz']['question'])
+                    dispatcher.utter_message(text="Correct Answer! 🎉")
+                    dispatcher.utter_message(text=f"Your quiz score is updated.")
+                else:
+                    dispatcher.utter_message(text=f"Wrong Answer! 😟. The correct answer is {correct_answer}")
+                    dispatcher.utter_message(text=f"Your quiz score is updated.")
+            return [SlotSet("topic",topic)]
+       return []
+
+class ActionMarkModuleComplete(Action):
+  def __init__(self):
+    super().__init__()
+    self.lms = LMSManager()
+
+  def name(self) -> Text:
+    return "action_mark_module_complete"
+
+  def run(self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    user_id = tracker.sender_id
+    topic = tracker.get_slot("topic")
+    module = tracker.get_slot("module")
+    logging.debug(f"ActionMarkModuleComplete: user_id={user_id}, topic={topic}, module={module}")
+    if topic and module:
+      # Map short name to full course name
+      if topic == "web":
+          full_topic_name = "Web Development"
+      elif topic == "app":
+        full_topic_name = "App Development"
+      elif topic == "python":
+          full_topic_name = "Python"
+      elif topic == "java":
+          full_topic_name = "Java"
+      elif topic == "c++":
+          full_topic_name = "C++"
+      elif topic == "fullstack":
+          full_topic_name = "Full Stack Development"
+      elif topic == "flutter":
+          full_topic_name = "Flutter"
+      else:
+        full_topic_name = topic
+      self.lms.mark_module_completed(user_id, full_topic_name, module)
+      dispatcher.utter_message(text=f"Okay, I've marked the {module} module as completed for the {full_topic_name} course.")
+      return []
+    else:
+      dispatcher.utter_message(text="Please provide both the course and module name")
+      return []
