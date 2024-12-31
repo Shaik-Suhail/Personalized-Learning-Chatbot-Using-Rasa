@@ -373,8 +373,15 @@ COURSE_MATERIALS = {
 RASA_ENDPOINT = "http://localhost:5005/webhooks/rest/webhook"
 
 # Helper Functions
+def load_css(file_path):
+    with open(file_path, "r") as f:
+      css = f"<style>{f.read()}</style>"
+      st.markdown(css, unsafe_allow_html=True)
+
+# Apply the CSS
+load_css(os.path.join("static", "styles.css"))
 def send_message_to_rasa(message: str) -> List[Dict[str, Any]]:
-     payload = {"sender": "user", "message": message}
+     payload = {"sender": st.session_state.get("user_id","user"), "message": message, "user_id":st.session_state.get("user_id","user")}
      headers = {'Content-type': 'application/json'}
      try:
         response = requests.post(RASA_ENDPOINT, json=payload, headers=headers)
@@ -383,7 +390,15 @@ def send_message_to_rasa(message: str) -> List[Dict[str, Any]]:
      except requests.exceptions.RequestException as e:
          st.error(f"Error connecting to Rasa: {e}")
          return []
-
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "enrolled_courses" not in st.session_state:
+    st.session_state.enrolled_courses = []
+if "user_progress" not in st.session_state:
+    st.session_state.user_progress = {} # Initialize user progress
+if "about_window_visible" not in st.session_state:
+     st.session_state.about_window_visible = False # Initialize the visibility
 def display_bot_response(response: List[Dict[str, Any]]) -> None:
     for message in response:
         if "text" in message:
@@ -422,6 +437,7 @@ def handle_initial_greeting() -> None:
        if response:
           st.session_state.messages.append({"role": "assistant", "content": response[0].get("text","")})
           display_bot_message(response[0].get("text",""))
+
 
 def get_feedback_response(prompt: str) -> str | None:
     import random
@@ -492,125 +508,36 @@ def display_course_response(topic: str) -> tuple[str, List[Dict[str,str]]]:
     st.write(course['description'])
     st.info("💡 **Learning Path:**\n")
 
-    # Display modules with completion buttons
+    # Display modules
     if 'modules' in course:
         for i, module in enumerate(course['modules']):
-            module_key = f"{topic}_module_{i}"
-            completed = False
-            if topic in st.session_state.user_progress and 'completed_modules' in st.session_state.user_progress[topic]:
-                if module['title'] in st.session_state.user_progress[topic]['completed_modules']:
-                  completed= True
             with st.expander(f"{i+1}. {module['title']}"):
                 st.write(f"**Description:** {module['description']}")
                 if 'content' in module:
-                  st.write(f"**Content:** {module['content']}")
-                if completed:
-                  st.success(f"Module completed")
-                else:
-                  if st.button(f"Mark {module['title']} as Complete", key=module_key):
-                      if topic not in st.session_state.user_progress:
-                          st.session_state.user_progress[topic]= {
-                              "completed_modules": [module["title"]]
-                         }
-                      else:
-                        if 'completed_modules' not in st.session_state.user_progress[topic]:
-                              st.session_state.user_progress[topic]['completed_modules'] = [module["title"]]
-                        elif module['title'] not in st.session_state.user_progress[topic]['completed_modules']:
-                            st.session_state.user_progress[topic]['completed_modules'].append(module['title'])
-                      st.success(f"Module {module['title']} marked as complete.")
-
-
+                    st.write(f"**Content:** {module['content']}")
     # Check if the user is already enrolled
     is_enrolled = topic in [enrolled_course['topic'] for enrolled_course in st.session_state.enrolled_courses]
-    # Add a button to enroll
+     # Add a button to enroll
     if is_enrolled:
        st.button(f"Enrolled in {course['name']}", key = f"enroll_{topic}", disabled=True)
     else:
-      if st.button(f"Enroll in {course['name']}", key = f"enroll_{topic}"):
-          if topic not in [ enrolled_course['name'].lower() for enrolled_course in st.session_state.enrolled_courses]:
-              course_entry = {
-                  "name": course['name'],
-                  "enrolled_at": datetime.now().strftime("%Y-%m-%d"),
-                  "status": "In Progress",
-                   "materials": course['materials'],
-                  "topic":topic
-              }
-              st.session_state.enrolled_courses.append(course_entry)
-              st.success(f"You are now enrolled in {course['name']}!")
-              st.session_state.messages.append({
-                        "role":"assistant",
-                        "content": f"You are now enrolled in {course['name']}!"
-                    })
-          else:
-             st.warning(f"You are already enrolled in {course['name']}!")
-             st.session_state.messages.append({
-                        "role":"assistant",
-                        "content": f"You are already enrolled in {course['name']}!"
-                    })
+        if st.button(f"Enroll in {course['name']}",key=f"enroll_{topic}"):
+            response = send_message_to_rasa(f"enroll me in {topic}")
+            if response:
+                for message in response:
+                    if "text" in message:
+                       st.session_state.messages.append({"role":"assistant", "content":message["text"]})
+                    display_bot_response([message])
     return response_text, course['materials']
 
 
 def show_enrolled_courses():
-    if st.session_state.enrolled_courses:
-        response_text = "Here are your enrolled courses:\n\n"
-        for course in st.session_state.enrolled_courses:
-            response_text += f"📚 {course['name']}\n"
-            response_text += f"Status: {course['status']}\n"
-            response_text += f"Enrolled: {course['enrolled_at']}\n"
-            if course['topic'] in st.session_state.user_progress and 'completed_modules' in st.session_state.user_progress[course['topic']]:
-               completed_modules = st.session_state.user_progress[course['topic']]['completed_modules']
-               response_text += f"Completed Modules: {', '.join(completed_modules)}\n"
-            else:
-                response_text += f"Completed Modules: None\n"
-            if  st.button(f"Start Quiz for {course['name']}", key=f"quiz_{course['name']}"):
-                  start_quiz(course["topic"], course['name'])
-        st.markdown(response_text)
-
-
-    else:
-        st.markdown("You're not enrolled in any courses yet. Would you like some recommendations?")
-
-def start_quiz(topic:str, course_name:str):
-      quiz = COURSE_MATERIALS[topic]['quiz']
-      st.session_state.quiz_started= True
-      if topic not in st.session_state.user_progress:
-         st.session_state.user_progress[topic] = {
-             "course_name": course_name,
-              "completed_modules": [],
-             "quiz_score":0,
-             "question_asked": quiz['question'],
-             "options":quiz['options'],
-              "correct_answer":quiz['correct_answer']
-         }
-      else:
-           st.session_state.user_progress[topic]['question_asked'] = quiz['question']
-           st.session_state.user_progress[topic]['options'] = quiz['options']
-           st.session_state.user_progress[topic]['correct_answer'] = quiz['correct_answer']
-
-      st.session_state.messages.append({
-              "role":"assistant",
-              "content":f"Ok, here's the quiz for {course_name}, please answer the question"
-           })
-
-      with st.chat_message("assistant"):
-           st.write(f"**{st.session_state.user_progress[topic]['question_asked']}**")
-           user_answer = st.radio("Select answer", st.session_state.user_progress[topic]['options'], key=f"radio_{course_name}_{random.random()}")
-
-           if user_answer:
-                if user_answer == st.session_state.user_progress[topic]["correct_answer"]:
-                     st.session_state.user_progress[topic]['quiz_score'] += 1
-                     st.success("Correct Answer")
-                     st.session_state.messages.append({
-                       "role": "assistant",
-                       "content": f"Your quiz score is {st.session_state.user_progress[topic]['quiz_score']}"
-                     })
-                else:
-                    st.error("Wrong Answer")
-                    st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": f"Your quiz score is {st.session_state.user_progress[topic]['quiz_score']}"
-                     })
-
+    response = send_message_to_rasa("show my courses")
+    if response:
+       for message in response:
+           if "text" in message:
+                st.session_state.messages.append({"role":"assistant", "content":message["text"]})
+           display_bot_response([message])
 # Rasa endpoint
 RASA_ENDPOINT = "http://localhost:5005/webhooks/rest/webhook"
 
@@ -644,15 +571,18 @@ if st.session_state.about_window_visible:
                <p>Try asking about:</p>
                   <ul>
                    <li>Web Development</li>
-                    <li>Data Science</li>
-                    <li>Mobile Apps</li>
-                     <li>Artificial Intelligence</li>
+                    <li>App Development</li>
+                    <li>Python</li>
+                    <li>Java</li>
+                    <li>Full Stack Development</li>
+                    <li>C++</li>
+                    <li>Flutter</li>
                    </ul>
            </div>
         """, unsafe_allow_html=True)
 
 # Display the animated tab with the application name
-st.markdown('<div class="animated-tab">Personalized Learning Chatbot</div>', unsafe_allow_html=True)
+# st.markdown('<div class="animated-tab-middle">Personalized Learning Chatbot</div>', unsafe_allow_html=True)
 
 # Handle initial welcome
 handle_initial_greeting()
@@ -694,18 +624,39 @@ if prompt := st.chat_input("What would you like to learn?", key="chat_input"):
     elif "flutter" in prompt:
         topic = "flutter"
     if topic:
-        course_details = get_course_materials(topic)
-        if course_details:
-            with st.chat_message("assistant"):
-                 response_text, materials = display_course_response(topic)
-                 st.session_state.messages.append({
-                        "role": "assistant",
-                        "content": response_text,
-                         "materials":materials
-                     })
+        if "enroll" in prompt:
+           response = send_message_to_rasa(prompt)
+           if response:
+              for message in response:
+                 if "text" in message:
+                    st.session_state.messages.append({"role": "assistant", "content": message["text"]})
+                 display_bot_response([message])
+        elif "mark" in prompt and "module" in prompt and "complete" in prompt:
+           response = send_message_to_rasa(prompt)
+           if response:
+              for message in response:
+                  if "text" in message:
+                    st.session_state.messages.append({"role":"assistant", "content":message["text"]})
+                  display_bot_response([message])
+        elif  "start quiz" in prompt:
+            response = send_message_to_rasa(prompt)
+            if response:
+               for message in response:
+                 if "text" in message:
+                    st.session_state.messages.append({"role": "assistant", "content": message["text"]})
+                 display_bot_response([message])
+        else:
+            course_details = get_course_materials(topic)
+            if course_details:
+                with st.chat_message("assistant"):
+                     response_text, materials = display_course_response(topic)
+                     st.session_state.messages.append({
+                            "role": "assistant",
+                            "content": response_text,
+                             "materials":materials
+                         })
     elif "show my courses" in prompt:
-        with st.chat_message("assistant"):
-            show_enrolled_courses()
+        show_enrolled_courses()
     # Check for requirements if user asked any other type of input
     if not any(word in prompt for word in ["show my courses", "show enrollments"]):
        requirement_message = check_input_requirements(prompt)
@@ -717,3 +668,6 @@ if prompt := st.chat_input("What would you like to learn?", key="chat_input"):
     if feedback_response:
         with st.chat_message("assistant"):
               st.markdown(f'<div class="message-container"><div class="bot-avatar message-avatar"></div><div class="bot-message"><p>{feedback_response}</p></div></div>', unsafe_allow_html=True)
+# Initialize a user_id
+if "user_id" not in st.session_state:
+    st.session_state.user_id = str(random.randint(1000, 9999))
